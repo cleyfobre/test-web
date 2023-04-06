@@ -1,0 +1,10 @@
+version: "3"
+services:
+  test-web-ondeploy:
+    image: test-web:0.0.1
+    container_name: test-web-blue
+    environment:
+      - LANG=ko_KR.UTF-8
+      - UWSGI_PORT=8000
+    ports:
+      - 8081:8080

@@ -3,17 +3,17 @@ node {
         checkout scm
     }
     stage('========== build project ==========') {
-        sh 'gradlew -xtest build'
+        sh 'gradlew clean build'
     }
     stage('========== Build image ==========') {
-        app = docker.build("cleyfobre/demo2")
+        app = docker.build("cleyfobre/test-web")
     }
     stage('========== Push image to docker hub ==========') {
         docker.withRegistry('', 'cleyfobre') {
             app.push("${env.BUILD_NUMBER}")
             app.push("latest")
-            sh 'docker rmi cleyfobre/demo2:$BUILD_NUMBER'
-            sh 'docker rmi cleyfobre/demo2:latest'
+            sh 'docker rmi cleyfobre/test-web:$BUILD_NUMBER'
+            sh 'docker rmi cleyfobre/test-web:latest'
         }
     }
     stage('========== Sned pem to ec2 ==========') {
