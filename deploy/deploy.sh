@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # blue up if no blue, green up if blue
+HELLO=$(pwd)
+logger "pwd?"
+logger ${HELLO}
+
 NO_BLUE=$(docker compose -p test-web-blue -f docker-compose.blue.yml ps | grep Up)
-logger ${NO_BLUE}
 if [ -z "$NO_BLUE" ]; then
     logger "blue up"
     docker compose -p test-web-blue -f docker-compose.blue.yml up -d
