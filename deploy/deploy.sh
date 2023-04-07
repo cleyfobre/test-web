@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# blue up if no blue
-# green up if blue
+# blue up if no blue, green up if blue
 NO_BLUE=$(docker compose -p test-web-blue -f docker-compose.blue.yml ps | grep Up)
 if [ -z "$NO_BLUE" ]; then
     echo "blue up"
