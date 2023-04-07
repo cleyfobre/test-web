@@ -15,9 +15,8 @@ else
     AFTER_COMPOSE_COLOR="green"
 fi
 
-sleep 10
-
-# check new container is up
+# check if new container is still up after 10s
+sleep 10s
 IS_UP=$(docker-compose -p test-web-${AFTER_COMPOSE_COLOR} -f docker-compose.${AFTER_COMPOSE_COLOR}.yml ps | grep Up)
 if [ -n "$IS_UP" ]; then
 
