@@ -5,13 +5,17 @@ NO_BLUE=$(docker compose -p test-web-blue -f docker-compose.blue.yml ps | grep U
 if [ -z "$NO_BLUE" ]; then
     logger "blue up"
     docker compose -p test-web-blue -f docker-compose.blue.yml up -d
+    logger "blue up2"
     BEFORE_COMPOSE_COLOR="green"
     AFTER_COMPOSE_COLOR="blue"
+    logger "blue up3"
 else
     logger "green up"
     docker compose -p test-web-green -f docker-compose.green.yml up -d
+    logger "green up2"
     BEFORE_COMPOSE_COLOR="blue"
     AFTER_COMPOSE_COLOR="green"
+    logger "green up3"
 fi
 
 # check if new container is still up after 10s
