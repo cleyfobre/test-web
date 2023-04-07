@@ -8,9 +8,9 @@
 #sudo rm -rf /var/run/docker.sock
 
 if command -v docker &> /dev/null; then
-    logger "docker already installed"
+    echo "docker already installed"
 else
-    logger "install docker now"
+    echo "install docker now"
     sudo apt-get update
     sudo apt-get install \
         ca-certificates \

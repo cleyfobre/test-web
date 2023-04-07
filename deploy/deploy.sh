@@ -2,12 +2,12 @@
 
 # blue up if no blue, green up if blue
 if docker ps | grep -q test-web-blue; then
-  logger "green up"
+  echo "green up"
   docker compose -p test-web-green -f docker-compose.green.yml up -d
   BEFORE_COMPOSE_COLOR="blue"
   AFTER_COMPOSE_COLOR="green"
 else
-  logger "blue up"
+  echo "blue up"
   docker compose -p test-web-blue -f docker-compose.blue.yml up -d
   BEFORE_COMPOSE_COLOR="green"
   AFTER_COMPOSE_COLOR="blue"
@@ -21,14 +21,14 @@ if docker ps | grep -q test-web-${AFTER_COMPOSE_COLOR}; then
   if docker ps | grep -q test-nginx; then
     docker cp ./nginx.${AFTER_COMPOSE_COLOR}.conf test-nginx:/etc/nginx/nginx.conf
     docker exec test-nginx nginx -s reload
-    logger "nginx reloaded"
+    echo "nginx reloaded"
   else
     docker image build -t test-nginx:0.0.1 -f Dockerfile_nginx . --build-arg COMPOSE_COLOR="${AFTER_COMPOSE_COLOR}"
     docker run -d -p 80:80 --name test-nginx test-nginx:0.0.1
-    logger "nginx started"
+    echo "nginx started"
   fi
 
   # previous app down
   docker compose -p test-web-${BEFORE_COMPOSE_COLOR} -f docker-compose.${BEFORE_COMPOSE_COLOR}.yml down
-  logger "$BEFORE_COMPOSE_COLOR down"
+  echo "$BEFORE_COMPOSE_COLOR down"
 fi
