@@ -2,37 +2,37 @@
 
 # blue up if no blue
 # green up if blue
-NO_BLUE=$(sudo docker compose -p test-web-blue -f docker-compose.blue.yml ps | grep Up)
+NO_BLUE=$(docker compose -p test-web-blue -f docker-compose.blue.yml ps | grep Up)
 if [ -z "$NO_BLUE" ]; then
     echo "blue up"
-    sudo docker compose -p test-web-blue -f docker-compose.blue.yml up -d
+    docker compose -p test-web-blue -f docker-compose.blue.yml up -d
     BEFORE_COMPOSE_COLOR="green"
     AFTER_COMPOSE_COLOR="blue"
 else
     echo "green up"
-    sudo docker compose -p test-web-green -f docker-compose.green.yml up -d
+    docker compose -p test-web-green -f docker-compose.green.yml up -d
     BEFORE_COMPOSE_COLOR="blue"
     AFTER_COMPOSE_COLOR="green"
 fi
 
 # check if new container is still up after 10s
 sleep 10s
-IS_UP=$(sudo docker compose -p test-web-${AFTER_COMPOSE_COLOR} -f docker-compose.${AFTER_COMPOSE_COLOR}.yml ps | grep Up)
+IS_UP=$(docker compose -p test-web-${AFTER_COMPOSE_COLOR} -f docker-compose.${AFTER_COMPOSE_COLOR}.yml ps | grep Up)
 if [ -n "$IS_UP" ]; then
 
     # if no nginx, run new nginx container
     NO_NGINX=$(docker ps | grep test-nginx)
     if [ -z "$NO_NGINX" ]; then
-        sudo docker image build -t test-nginx:0.0.1 -f Dockerfile_nginx . --build-arg COMPOSE_COLOR="${AFTER_COMPOSE_COLOR}"
-        sudo docker run -d -p 80:80 --name test-nginx test-nginx:0.0.1
+        docker image build -t test-nginx:0.0.1 -f Dockerfile_nginx . --build-arg COMPOSE_COLOR="${AFTER_COMPOSE_COLOR}"
+        docker run -d -p 80:80 --name test-nginx test-nginx:0.0.1
         echo "nginx started"
     else
-        sudo docker cp ./nginx.${AFTER_COMPOSE_COLOR}.conf test-nginx:/etc/nginx/nginx.conf
-        sudo docker exec test-nginx nginx -s reload
+        docker cp ./nginx.${AFTER_COMPOSE_COLOR}.conf test-nginx:/etc/nginx/nginx.conf
+        docker exec test-nginx nginx -s reload
         echo "nginx reloaded"
     fi
 
     # previous app down
-    sudo docker compose -p test-web-${BEFORE_COMPOSE_COLOR} -f docker-compose.${BEFORE_COMPOSE_COLOR}.yml down
+    docker compose -p test-web-${BEFORE_COMPOSE_COLOR} -f docker-compose.${BEFORE_COMPOSE_COLOR}.yml down
     echo "$BEFORE_COMPOSE_COLOR down"
 fi
